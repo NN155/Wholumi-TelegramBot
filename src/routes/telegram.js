@@ -6,17 +6,6 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
-router.post('/extension/newTrade', async (req, res) => {
-    try {
-        console.log('Получен новый трейд:', req.body);
-        await TelegramService.newTrade(req.body);
-        res.status(200).json({ success: true });
-    } catch (error) {
-        console.error('Ошибка обработки трейда:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
 router.post('/', async (req, res) => {
     if (req.body.callback_query) {
         const action = req.body.callback_query.data;
