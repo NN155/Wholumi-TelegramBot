@@ -1,9 +1,9 @@
-const personal = require('./personal');
-const club = require('./club');
+const Personal = require('./personal');
+const Club = require('./club');
 
 class TelegramService {
-    personal = personal;
-    club = club;
+    Personal = Personal;
+    Club = Club;
 }
 
 module.exports = new TelegramService();
