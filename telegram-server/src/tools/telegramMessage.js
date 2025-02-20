@@ -1,25 +1,22 @@
 const axios = require('axios');
 const FormData = require('form-data');
 
-class TelegramMessagesService {
-    constructor() {
-        this.TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-        this.TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-        this.TELEGRAM_API_URL = `https://api.telegram.org/bot${this.TELEGRAM_BOT_TOKEN}`;
+class TelegramPoster {
+    constructor({chatId, threadId}) {
+        this.TELEGRAM_CHAT_ID = chatId;
+        this.TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+        this.TELEGRAM_THREAD_ID = threadId;
     }
 
-    async sendPhoto(photoUrl, caption = "", messageThreadId = null) {
+    async sendPhoto(photoUrl, caption = "") {
         try {
             const form = new FormData();
             form.append('chat_id', this.TELEGRAM_CHAT_ID);
+            form.append('message_thread_id', this.TELEGRAM_THREAD_ID);
             form.append('photo', photoUrl);
             form.append('caption', this._escapeMarkdownV2(caption));
             form.append('parse_mode', 'MarkdownV2');
             
-            if (messageThreadId) {
-                form.append('message_thread_id', messageThreadId);
-            }
-
             const response = await axios.post(`${this.TELEGRAM_API_URL}/sendPhoto`, form, {
                 headers: {
                     ...form.getHeaders(),
@@ -33,7 +30,7 @@ class TelegramMessagesService {
         }
     }
 
-    async editMessageMedia(messageId, photoUrl, caption = "", messageThreadId = null) {
+    async editMessageMedia(photoUrl, caption, messageId) {
         try {
             const media = {
                 type: 'photo',
@@ -44,13 +41,10 @@ class TelegramMessagesService {
 
             const data = {
                 chat_id: this.TELEGRAM_CHAT_ID,
+                message_thread_id: this.TELEGRAM_THREAD_ID,
                 message_id: messageId,
                 media: media
             };
-
-            if (messageThreadId) {
-                data.message_thread_id = messageThreadId;
-            }
 
             const response = await axios.post(`${this.TELEGRAM_API_URL}/editMessageMedia`, data);
             return response.data.result.message_id;
@@ -60,17 +54,14 @@ class TelegramMessagesService {
         }
     }
 
-    async sendMessage(text, messageThreadId = null) {
+    async sendMessage(text) {
         try {
             const data = {
                 chat_id: this.TELEGRAM_CHAT_ID,
+                message_thread_id: this.TELEGRAM_THREAD_ID,
                 text: this._escapeMarkdownV2(text),
                 parse_mode: 'MarkdownV2'
             };
-
-            if (messageThreadId) {
-                data.message_thread_id = messageThreadId;
-            }
 
             const response = await axios.post(`${this.TELEGRAM_API_URL}/sendMessage`, data);
             return response.data.result.message_id;
@@ -80,19 +71,16 @@ class TelegramMessagesService {
         }
     }
 
-    async editMessageText(messageId, text, messageThreadId = null) {
+    async editMessageText(messageId, text) {
         try {
             const data = {
                 chat_id: this.TELEGRAM_CHAT_ID,
+                message_thread_id: this.TELEGRAM_THREAD_ID,
                 message_id: messageId,
                 text: this._escapeMarkdownV2(text),
                 parse_mode: 'MarkdownV2'
             };
-
-            if (messageThreadId) {
-                data.message_thread_id = messageThreadId;
-            }
-
+            
             const response = await axios.post(`${this.TELEGRAM_API_URL}/editMessageText`, data);
             return response.data.result.message_id;
         } catch (error) {
@@ -121,4 +109,62 @@ class TelegramMessagesService {
     }
 }
 
-module.exports = new TelegramMessagesService();
+class TelegramBotWorker {
+    constructor({chatId, threadId}, length = 999) {
+        this.telegramBot = new TelegramPoster({chatId, threadId});
+        this.cardMessageId = null;
+        this.topMessagesIds = [];
+        this.textSplitter = new TextSplitter(length);
+    }
+
+    async sendTopMessages(text, imgUrl) {
+        const splittedText = this.textSplitter.split(text);
+
+        for (let i = 0; i < splittedText.length; i++) {
+            if (i === 0) {
+                if (this.topMessagesIds[i]) {
+                    await this.telegramBot.editMessageMedia(imgUrl, splittedText[i], this.topMessagesIds[i]);
+                } else {
+                    this.topMessagesIds[i] = await this.telegramBot.sendPhoto(imgUrl, splittedText[i]);
+                }
+            } else {
+                if (this.topMessagesIds[i]) {
+                    await this.telegramBot.editMessageText(splittedText[i], this.topMessagesIds[i]);
+                } else {
+                    const messageId = await this.telegramBot.sendMessage(splittedText[i]);
+                    this.topMessagesIds[i] = messageId;
+                }
+            }
+        }
+    }
+}
+
+class TextSplitter {
+    constructor(length = 999) {
+        this.length = length;
+    }
+
+    split(text) {
+        const result = [];
+        let currentText = text;
+        while (currentText.length > this.length) {
+            let index = currentText.lastIndexOf("\n", this.length);
+            if (index === -1) {
+                index = this.length;
+                result.push(currentText.slice(0, index));
+                currentText = currentText.slice(index);
+            } else {
+                result.push(currentText.slice(0, index));
+                currentText = currentText.slice(index + 1);
+            }
+        }
+        result.push(currentText);
+        return result;
+    }
+}
+
+module.exports = {
+    TelegramPoster,
+    TelegramBotWorker,
+    TextSplitter
+};
