@@ -16,9 +16,7 @@
   },
   "scripts": {
     "start": "node src/app.js",
-    "ngrok:start": "ngrok http 3000 && npm run ngrok:update",
-    "ngrok:update": "node tools/update-env.js",
-    "ngrok:stop": "npx kill-port 3000 && ngrok stop",  
-    "ngrok:restart": "npm run ngrok:stop && npm run ngrok:start && npm run ngrok:update"
+    "ngrok:start": "ngrok http 54860",
+    "ngrok:update": "node tools/update-env.js"
   }
 }

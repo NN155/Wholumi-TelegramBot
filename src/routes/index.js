@@ -7,8 +7,3 @@ router.use('/webhook', telegramRouter);
 router.use('/extension', extensionRouter);
 
 module.exports = router;
-
-
-
-
-

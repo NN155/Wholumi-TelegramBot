@@ -1,4 +1,7 @@
+const TelegramController = require('./telegram')
+const ExtensionController = require('./extension')
+
 module.exports = {
-    TelegramController: require('./telegram'),
-    // ExtensionController: require('./extension')
+    TelegramController,
+    ExtensionController
 }

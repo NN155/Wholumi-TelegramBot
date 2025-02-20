@@ -3,7 +3,7 @@ const cors = require('cors');
 const routes = require('./routes');
 const express = require('express');
 const bodyParser = require('body-parser');
-const setWebhook = require('./telegram/setWebHook');
+const setWebhook = require('./tools/setWebHook');
 
 setWebhook();
 
