@@ -71,7 +71,7 @@ class TelegramPoster {
         }
     }
 
-    async editMessageText(messageId, text) {
+    async editMessageText(text, messageId) {
         try {
             const data = {
                 chat_id: this.TELEGRAM_CHAT_ID,
