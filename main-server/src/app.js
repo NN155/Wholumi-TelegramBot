@@ -1,10 +1,13 @@
 require('dotenv').config();
 const cors = require('cors');
 const routes = require('./routes');
+const connectDB = require('./config/mongoDB');
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
+
+connectDB();
 
 const PORT = process.env.PORT;
 
