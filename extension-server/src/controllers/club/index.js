@@ -5,6 +5,10 @@ class ClubController {
         const response = await ClubServices.dailyBoost(req.body);
         res.status(200).send(response);
     }
+    async dailySkipped(req, res) {
+        const response = await ClubServices.dailySkipped(req.body);
+        res.status(200).send(response);
+    }
 }
 
 module.exports = new ClubController();

@@ -1,4 +1,4 @@
-const { TelegramBotWorker } = require('../../../tools/telegramMessage');
+const { TelegramBotWorker, TelegramPoster } = require('../../../tools/telegramMessage');
 
 class Club {
     constructor() {
@@ -22,6 +22,11 @@ class Club {
             this.dailyWorker = new TelegramBotWorker({chatId, threadId});
             this.dailyTime = Date.now();
         }
+    }
+
+    async dailySkipped({pageUrl, chatId, threadId}) {
+        const telegramPoster = new TelegramPoster({chatId, threadId});
+        await telegramPoster.sendMessage(pageUrl);
     }
 }
 

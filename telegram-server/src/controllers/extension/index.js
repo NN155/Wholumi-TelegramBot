@@ -17,6 +17,15 @@ class ExtensionController {
             return res.status(400).json({ message: error.message });
         }
     }
+    
+    async clubDailySkipped(req, res) {
+        try {
+            await TelegramService.Club.dailySkipped(req.body);
+            return res.status(204).send();
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new ExtensionController();
