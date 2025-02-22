@@ -5,10 +5,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    prefix: {
-        type: String,
-    },
-    suffix: {
+    customName: {
         type: String,
     },
 });

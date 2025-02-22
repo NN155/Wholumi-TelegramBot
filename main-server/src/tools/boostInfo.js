@@ -36,9 +36,7 @@ ${sortedUsers.map((user, index) => {
     const availableWord = getAvailableWord(user.count);
 
     const userInfo = users.find(u => u.name === user.name)
-    let name = user.name
-    userInfo?.prefix && (name = `${userInfo.prefix}${name}`);
-    userInfo?.suffix && (name = `${name}${userInfo.suffix}`);      
+    let name = userInfo?.customName ? userInfo?.customName : user.name
 
     return `${prefix}${place}. ${name} - ${user.boosted} ${cardWord} из ${user.count} ${availableWord}`;
 }).join("\n")}
