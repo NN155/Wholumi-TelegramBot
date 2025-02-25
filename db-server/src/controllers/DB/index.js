@@ -6,7 +6,7 @@ class DBController {
         res.json(users);
     }
     getUser(req, res) {
-        const user = DBService.users.findOne(req.params);
+        const user = DBService.users.findOne(req.query);
         res.json(user);
     }
     getChats(req, res) {

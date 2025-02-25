@@ -49,10 +49,8 @@ class BaseCacheService {
         if (Object.keys(query).length === 0) {
             return null;
         }
-    
         const result = Array.from(this.cache.values()).find(doc => {
             return Object.keys(query).every(key => {
-                console.log(`Comparing ${key}: ${doc[key]} == ${query[key]}`);
                 return doc[key] == query[key];
             });
         });
