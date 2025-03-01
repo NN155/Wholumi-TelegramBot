@@ -25,7 +25,7 @@ bot.onText(/\/(trade|need|users) (\d+) (.+)/, async (msg, match) => {
 });
 
 bot.on('polling_error', (error) => {
-    console.error('Помилка polling:', error);
+    console.error('Error polling:', error);
 });
 
 console.log('🤖 Bot started');
