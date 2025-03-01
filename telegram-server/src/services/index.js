@@ -1,4 +1,5 @@
+const TelegramService = require('./telegram')
+
 module.exports = {
-    TelegramService: require('./telegram'),
-    // ExtensionService: require('./extension')
+    TelegramService
 }
