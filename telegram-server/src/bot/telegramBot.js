@@ -7,17 +7,18 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
 
 bot.onText(/\/(trade|need|users) (\d+) (.+)/, async (msg, match) => {
     try {
-        const command = {
-            command: match[1],
+        const action = {
+            action: match[1],
             id: match[2],
             name: match[3],
         }
         const msgData = {
             chatId: msg.chat.id,
             threadId: msg.message_thread_id || null,
+            messageId: msg.message_id,
             from: msg.from,
         }
-        await botService.searchCards(msgData, command);
+        await botService.searchCards(action, msgData);
     } catch (error) {
         console.error('Error on /trade|need|users:', error);
     }

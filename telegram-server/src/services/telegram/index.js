@@ -47,21 +47,7 @@ class TelegramService {
         const sentMessage = await bot.deleteMessage(chatId, messageId);
         return sentMessage;
     }
-    async replyMessage(text, messageId) {
-        try {
 
-            const data = {
-                chat_id: this.TELEGRAM_CHAT_ID,
-                message_thread_id: this.TELEGRAM_THREAD_ID,
-                text: text,
-                reply_to_message_id: messageId
-            };
-
-            await axios.post(`${this.TELEGRAM_API_URL}/sendMessage`, data);
-        } catch (error) {
-            console.error('Error deleting message:', error);
-        }
-    }
     async sendCoupleMessages({ chatId, threadId = null, photoUrl, caption = "" , replyToMessageId = null }) {
         const MessagesResponse = [];
         const messages = this._split(caption);
