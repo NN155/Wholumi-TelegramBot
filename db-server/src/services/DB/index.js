@@ -1,5 +1,7 @@
 const User = require('../../models/User');
 const Chat = require('../../models/Chat');
+const Options = require('../../models/Options');
+const Images = require('../../models/Images');
 
 class BaseCacheService {
     constructor(model) {
@@ -29,10 +31,12 @@ class BaseCacheService {
         const changeStream = this.model.watch();
         changeStream.on('change', async (change) => {
             console.log(`${this.model.modelName} collection change detected:`, change);
-            const { operationType, documentKey, fullDocument } = change;
+            const { operationType, documentKey } = change;
+            
             const docId = documentKey?._id.toString();
-
+            
             if (operationType === 'insert' || operationType === 'update' || operationType === 'replace') {
+                const fullDocument = await this.model.findById(docId);
                 this.cache.set(docId, fullDocument);
             } else if (operationType === 'delete') {
                 this.cache.delete(docId);
@@ -49,9 +53,23 @@ class BaseCacheService {
         if (Object.keys(query).length === 0) {
             return null;
         }
+        
         const result = Array.from(this.cache.values()).find(doc => {
             return Object.keys(query).every(key => {
-                return doc[key] == query[key];
+                const docValue = doc.get(key);
+                const queryValue = query[key];
+                if (Array.isArray(docValue)) {
+                    if (Array.isArray(queryValue)) {
+                        return queryValue.every(item => docValue.includes(item));
+                    }
+                    return docValue.includes(queryValue);
+                }
+                
+                if (Array.isArray(queryValue)) {
+                    return queryValue.includes(docValue);
+                }
+                
+                return docValue == queryValue;
             });
         });
     
@@ -59,21 +77,35 @@ class BaseCacheService {
     }
 }    
 
-class UserService extends BaseCacheService {
+class UsersService extends BaseCacheService {
     constructor() {
         super(User);
     }
 }
 
-class ChatService extends BaseCacheService {
+class ChatsService extends BaseCacheService {
     constructor() {
         super(Chat);
     }
 }
 
+class OptionsService extends BaseCacheService {
+    constructor() {
+        super(Options);
+    }
+}
+
+class ImagesService extends BaseCacheService {
+    constructor() {
+        super(Images);
+    }
+}
+
 class DBService {
-    users = new UserService();
-    chats = new ChatService();
+    users = new UsersService();
+    chats = new ChatsService();
+    options = new OptionsService();
+    images = new ImagesService();
 }
 
 module.exports = new DBService();
