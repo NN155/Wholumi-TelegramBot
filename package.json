@@ -1,0 +1,23 @@
+{
+    "scripts": {
+        "install:telegram": "cd telegram-server && npm install",
+        "install:main": "cd main-server && npm install",
+        "install:extension": "cd extension-server && npm install",
+        "install:db": "cd db-server && npm install",
+        "install:all": "npm run install:telegram && npm run install:main && npm run install:extension && npm run install:db",
+        "start:telegram": "cd telegram-server && npm start",
+        "start:telegram:dev": "cd telegram-server && npm run start:dev",
+        "start:telegram:prod": "cd telegram-server && npm run start:prod",
+        "start:main": "cd main-server && npm start",
+        "start:main:dev": "cd main-server && npm run start:dev",
+        "start:main:prod": "cd main-server && npm run start:prod",
+        "start:extension": "cd extension-server && npm start",
+        "start:db": "cd db-server && npm start",
+        "start": "concurrently \"npm run start:telegram\" \"npm run start:main\" \"npm run start:extension\" \"npm run start:db\"",
+        "start:dev": "concurrently \"npm run start:telegram:dev\" \"npm run start:main:dev\" \"npm run start:extension\" \"npm run start:db\"",
+        "start:prod": "concurrently \"npm run start:telegram:prod\" \"npm run start:main:prod\" \"npm run start:extension\" \"npm run start:db\""
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    }
+}
