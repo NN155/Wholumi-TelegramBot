@@ -1,9 +1,6 @@
-const mongoose = require('mongoose');
-const User = require('../../models/users');
-
 class UsersService{
     async getAll() {
-        return await User.find();
+        return await (await fetch(`${process.env.DB_SERVER_URL}/users`)).json();
     }
 }
 

@@ -5,10 +5,13 @@
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "mongoose": "^8.10.1"
+    "express": "^4.21.2"
   },
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "start:dev": "cross-env MODE=development  node src/app.js"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
