@@ -1,4 +1,3 @@
-
 class SocketManager  {
     constructor() {
         this.io = null;
@@ -24,18 +23,9 @@ class SocketManager  {
 
     _setupSocketListeners(socket) {
         socket.on('searchResults', (data) => {
-            try {
-                console.log(`Received searchResults from ${socket.id}:`, data);
-                fetch(`${process.env.MAIN_SERVER_URL}/action/results`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data.result),
-                })
-            } catch (error) {
-                console.error(error);
-            }
+            console.log('Results', data.result);
+            const { ActionService } = require('../services'); 
+            ActionService.sendResponse(data.result);
         });
         
     }

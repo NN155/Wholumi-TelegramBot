@@ -3,5 +3,5 @@ const ActionService = require('./action');
 
 module.exports = {
     ClubServices,
-    ActionService
+    ActionService,
 }
