@@ -6,9 +6,14 @@ class SocketDispatcher {
         const socketId = SocketManager.getSocket();
         if (!socketId) {
             const { ActionService } = require('../services');
-            ActionService.sendResponse({error: 'Try again later'});
+            ActionService.sendResponse({error: 'Try again later', taskId: data.taskId});
         }
+        SocketManager.workingSocket = {socketId: socketId.id, taskId: data.taskId};
         SocketManager.sendToSocket(socketId, event, data);
+    }
+
+    clearSocket() {
+        SocketManager.workingSocket = null;
     }
 }
 

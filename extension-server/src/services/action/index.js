@@ -1,12 +1,13 @@
 const socketDispatcher = require('../../socket/SocketDispatcher');
 
 class ActionService {
-    proccessAction({action, data}) {
-        socketDispatcher.sendEvent(action, data);
+    proccessAction({action, data, taskId}) {
+        socketDispatcher.sendEvent(action, {...data, taskId });
     }
 
     sendResponse(data) {
         try {
+            socketDispatcher.clearSocket();
             fetch(`${process.env.MAIN_SERVER_URL}/action/results`, {
                 method: 'POST',
                 headers: {

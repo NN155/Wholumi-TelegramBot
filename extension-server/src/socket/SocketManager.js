@@ -3,6 +3,7 @@ class SocketManager  {
         this.io = null;
         this.socketsConnection = new Set();
         this.socketInstances = new Map();
+        this.workingSocket = null;
     }
     
     getSocket() {
@@ -33,6 +34,11 @@ class SocketManager  {
     handleDisconnect(socket) {
         socket.on('disconnect', () => {
             this._removeSocket(socket);
+            if (this.workingSocket?.socketId === socket.id) {
+                console.log(`Socket ${socket.id} disconnected while working anout task ${this.workingSocket.taskId}`);
+                const { ActionService } = require('../services'); 
+                ActionService.sendResponse({error: "Something went wrong", taskId: this.workingSocket.taskId});
+            }
         });
     }
 
