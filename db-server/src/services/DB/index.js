@@ -2,6 +2,7 @@ const User = require('../../models/User');
 const Chat = require('../../models/Chat');
 const Options = require('../../models/Options');
 const Images = require('../../models/Images');
+const Roles = require('../../models/Roles');
 
 class BaseCacheService {
     constructor(model) {
@@ -101,11 +102,18 @@ class ImagesService extends BaseCacheService {
     }
 }
 
+class RolesService extends BaseCacheService {
+    constructor() {
+        super(Roles);
+    }
+}
+
 class DBService {
     users = new UsersService();
     chats = new ChatsService();
     options = new OptionsService();
     images = new ImagesService();
+    roles = new RolesService();
 }
 
 module.exports = new DBService();

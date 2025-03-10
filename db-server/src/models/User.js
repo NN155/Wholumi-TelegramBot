@@ -3,10 +3,29 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
     },
     customName: {
         type: String,
+    },
+    telegramId: {
+        type: Number,
+    },
+    telegramUsername: {
+        type: String,
+    },
+    isBanned: {
+        type: Boolean,
+        default: false,
+    },
+    banType: {
+        type: String,
+    },
+    banExpireDate: {
+        type: Date,
+    },
+    role: {
+        type: String,
+        default: 'visitor',
     },
 });
 
