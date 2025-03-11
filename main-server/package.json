@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node src/app.js",
-    "start:dev": "cross-env MODE=development  node src/app.js"
+    "start:dev": "cross-env MODE=development  node src/app.js",
+    "start:prod": "cross-env MODE=production  node src/app.js"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
